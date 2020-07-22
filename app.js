@@ -13,7 +13,8 @@ app.get("/tasks", (req, res) => {
 
 app.post("/tasks", (req, res) => {
   const id = tasks[tasks.length - 1].id + 1;
-  const newTask = { id, ...req.body };
+  const newTask = { id, done: false, ...req.body };
+
   tasks.push(newTask);
   res.status(201).json(newTask);
 });
@@ -22,7 +23,8 @@ app.put("/tasks/:taskId", (req, res) => {
   const { taskId } = req.params;
   const foundTask = tasks.find((task) => task.id === +taskId);
   if (foundTask) {
-    for (const key in req.body) foundTask[key] = req.body[key];
+    foundTask.done = !foundTask.done;
+    res.status(204).end();
   } else {
     res.status(404).json({ message: "you didnt mention this task" });
   }
